@@ -2,12 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const path = require('path'); // Import the path module
 
 const app = express();
 const port = process.env.PORT || 3000; // Use Render's port or 3000 for local
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// Serve static files from the same directory
+app.use(express.static(path.join(__dirname)));
 
 const dataFilePath = 'heatmap_data.json';
 
