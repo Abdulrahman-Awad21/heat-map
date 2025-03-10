@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Heatmap from Drawn Items</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <style>
+        #map { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        var map = L.map('map').setView([30.025705, 31.462097], 13); // Set initial view in new cairo fo
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // const SERVER_URL = 'http://localhost:3000'; // Replace with your server URL
+        const SERVER_URL = 'YOUR_RENDER_URL'; // Replace with your Render URL
+
+
+        // Function to fetch heatmap data from the server
+        function fetchHeatmapData() {
+            fetch(`${SERVER_URL}/heatmap-data`)
+                .then(response => response.json())
+                .then(data => {
+                    // Process the data and create the heatmap
+                    const heatMapPoints = data.map(point => [point.lat, point.lng]);
+                    var heat = L.heatLayer(heatMapPoints, { radius: 25, minOpacity: 0.5 }).addTo(map);
+                })
+                .catch(error => {
+                    console.error('Error fetching heatmap data:', error);
+                    alert('Failed to load heatmap data.');
+                });
+        }
+
+        // Call the function to fetch data and create the heatmap when the page loads
+        fetchHeatmapData();
+    </script>
+</body>
+</html>
